@@ -67,7 +67,7 @@ class Experiment:
             gate_choice = random.randint(1,2)
             gate = gate_dict[gate_choice]
             if (gate_choice == 1) and (self.magic):
-                magic_step
+                self.magic_step()
             else:
                 self.state = np.matmul(gate, self.state)
                 self.angles.append(self.__get_angle(self.state))
