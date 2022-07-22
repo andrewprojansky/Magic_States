@@ -18,6 +18,7 @@ Defines all universal gates used
 H = np.array([[1 / np.sqrt(2), 1 / np.sqrt(2)], [1 / np.sqrt(2), -1 / np.sqrt(2)]])
 S = np.array([[1, 0], [0, 1j]])
 T = np.array([[np.exp(-1j * np.pi / 8), 0], [0, np.exp(1j * np.pi / 8)]])
+Z = np.array([[1, 0], [0, -1]])
 CNot = np.array([[1,0,0,0],[0,1,0,0],[0,0,0,1],[0,0,1,0]])
 
 """
@@ -26,6 +27,7 @@ Defines all useful states and matrix products for simulation
 
 univ_rot = np.matmul(T, np.matmul(H, np.matmul(T, H)))
 magic_state = np.array([1/np.sqrt(2),1/np.sqrt(2)*np.exp(1j*np.pi/4)])
+gate_dict = {1: T, 2: H}
 
 class Experiment:
     """
@@ -52,23 +54,26 @@ class Experiment:
         state: list = np.array([1,0])
 
     ):
+        self.num_steps = num_steps
+        self.magic = magic
+        self.state = state
+
 
         self.angles = []
 
     ################# run functions ##################################
     def run_stepwise(self):
-        if self.magic:
-            self.magic_steps()
-        else:
-            self.gate_steps()
+        for i in range(self.num_steps):
+            gate_choice = random.randint(1,2)
+            gate = gate_dict[gate_choice]
+            if (gate_choice == 1) and (self.magic):
+                magic_step
+            else:
+                self.state = np.matmul(gate, self.state)
+                self.angles.append(self.__get_angle(self.state))
 
     def magic_steps(self):
         pass
-
-    def gate_steps(self):
-        for i in range(self.num_steps):
-            self.state = np.matmul(univ_rot, self.state)
-            self.angles.append(self.__get_angle(self.state))
 
     def __get_angle(self, state):
         """
@@ -85,7 +90,7 @@ class Experiment:
 
     ##############plot functions ########################
     def plot(self):
-        states_xyz = [self.__gen_xyz_points(x) for x in self.angles]
+        states_xyz = [self.__gen_xyz_points(self.angles)]
         fig = plt.figure()
         ax = fig.add_subplot(projection="3d")
         u, v = np.mgrid[0 : 2 * np.pi : 50j, 0 : np.pi : 50j]
@@ -126,7 +131,8 @@ class Experiment:
 
 
 #%%
-exp = Experiment(num_steps=100)
+exp = Experiment(num_steps=1000)
 exp.run_stepwise()
 exp.plot()
+del exp
 #%%
