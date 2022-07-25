@@ -43,6 +43,12 @@ def cc(gate):
 
     return np.transpose(np.matrix.conjugate(gate))
 
+def partial_conditional_measure(rho_t):
+    """
+    Performs partial trace over the ancilla system, then applies
+    conditional S gate to the leftover state. 
+    """
+
 class Experiment:
     """
     Parameters
@@ -87,7 +93,9 @@ class Experiment:
                 self.__gen_xyz_points()
 
     def magic_steps(self):
-        pass
+        rho_t = np.tensordot(self.state, rho_m)
+        rho_t = np.matmul(CNot, np.matmul(rho_t, cc(CNot)))
+        self.state = partial_conditional_measure(rho_t)
 
     ##############plot functions ########################
     def plot(self):
