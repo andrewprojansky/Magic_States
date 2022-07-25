@@ -96,7 +96,7 @@ def partial_trace(rho):
     new_matrix = np.array([[rho[0][0]+rho[1][1],rho[0][2]+rho[1][3]],
                            [rho[2][0]+rho[3][1],rho[2][2]+rho[3][3]]])
     return new_matrix
-    
+
 class Experiment:
     """
     Parameters
