@@ -1,2 +1,4 @@
 # Magic_States
-Repository for short code examples to help understand magic states. 
+Repository for short code examples to help understand magic states. Currently the main file is for showing that universality can be reached by calling a T gate, or using a magic state; though the example for one dimensions is a bit redundant, it should show the architecture for using magic states rather than T gates in larget cirucits. 
+Measurement is treated via simulaiton in hopes that the interested reader can peer into a way to understand how measurement may be simulated in other simulators (Qiskit, etc), and so that this code can be built on to maybe one day be a full quantum simulator, with emphasis on its use for instruction of students. 
+Next steps for this project include looking into some density calculations; approximating after n steps how much of the bloch sphere has been reached. 
