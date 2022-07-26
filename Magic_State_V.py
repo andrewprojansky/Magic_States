@@ -61,10 +61,10 @@ def partial_conditional_measure(rho_t):
     fullp = np.kron(I, proj[bc])
     rhopr = np.matmul(rho_t, fullp)
     rho_p = np.matmul(fullp, rhopr)/(np.trace(rhopr))
+    rho_red = partial_trace(rho_p)
     if bc == 1:
-        S_t = np.kron(S, I)
-        rho_p = np.matmul(S_t, np.matmul(rho_p, S_t))
-    return partial_trace(rho_p)
+        rho_red = np.matmul(S, np.matmul(rho_red, cc(S)))
+    return rho_red
 
 def get_bias(rho):
     """
@@ -78,9 +78,9 @@ def get_bias(rho):
         Hermetian density matrix which we take an expectation value over
         identiy tensor sigma z
     """
-    e_v = np.trace( np.matmul(rho, sig_z_p) )
+    e_v = np.real(np.trace( np.matmul(rho, sig_z_p) ))
     ran = random.random()
-    return 0 if random.random() > (0.5+e_v/2) else 1
+    return 0 if ran > (0.5+e_v/2) else 1
 
 def partial_trace(rho):
     """
@@ -97,7 +97,6 @@ def partial_trace(rho):
     new_matrix = np.array([[rho[0][0]+rho[1][1],rho[0][2]+rho[1][3]],
                            [rho[2][0]+rho[3][1],rho[2][2]+rho[3][3]]])
     return new_matrix
-    
 
 class Experiment:
     """
@@ -140,10 +139,10 @@ class Experiment:
                 self.magic_step()
             else:
                 self.state = np.matmul(gate, np.matmul(self.state, cc(gate)))
-                self.__gen_xyz_points()
+            self.__gen_xyz_points()
 
-    def magic_steps(self):
-        rho_t = np.tensordot(self.state, rho_m, 0)
+    def magic_step(self):
+        rho_t = np.kron(self.state, rho_m)
         rho_t = np.matmul(CNot, np.matmul(rho_t, cc(CNot)))
         self.state = partial_conditional_measure(rho_t)
 
@@ -172,7 +171,7 @@ class Experiment:
         self.angles[2].append(2*self.state[0][0]-1)
 
 #%%
-exp = Experiment(num_steps=1000)
+exp = Experiment(num_steps=100, magic=True)
 exp.run_stepwise()
 exp.plot()
 del exp
