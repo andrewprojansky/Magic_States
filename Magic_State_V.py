@@ -1,7 +1,7 @@
 """
 Code to understand magic states by visualizing single qubit transformations
-around the bloch sphere explicitly with the Hadamard and T gate, and with
-the Hadamard, T gate, Phase, gate, and Control-Not gate
+around the bloch sphere explicitly with the random circuits of the 
+Hadamard and T gate.
 
 Code Written by Andrew Projansky
 Project Start Date: 7/21/2022
@@ -159,7 +159,7 @@ class Experiment:
         plt.show()
 
     def __gen_xyz_points(self):
-        
+
         self.angles[0].append(2*np.real(self.state[1][0]))
         self.angles[1].append(2*np.imag(self.state[1][0]))
         self.angles[2].append(2*self.state[0][0]-1)
