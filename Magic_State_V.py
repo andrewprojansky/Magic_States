@@ -28,7 +28,7 @@ Defines all useful states and matrix products for simulation
 
 magic_state = np.array([1/np.sqrt(2),1/np.sqrt(2)*np.exp(1j*np.pi/4)])
 rho_m = np.tensordot(magic_state, np.conjugate(magic_state),0)
-sig_z_p = np.tensordot(I, Z)
+sig_z_p = np.kron(I, Z)
 gate_dict = {1: T, 2: H}
 proj = {0: np.array([[1,0],[0,0]]), 1: np.array([[0,0],[0,1]])}
 
@@ -58,12 +58,12 @@ def partial_conditional_measure(rho_t):
 
     #one day maybe make projection generators rather than just having a list
     bc = get_bias(rho_t)
-    fullp = np.tensordot(I, proj[bc])
+    fullp = np.kron(I, proj[bc])
     rhopr = np.matmul(rho_t, fullp)
     rho_p = np.matmul(fullp, rhopr)/(np.trace(rhopr))
     if bc == 1:
-        S_t = np.tensordot(S, I)
-        rho_p = np.matmul(S_t, rho_p, S_t)
+        S_t = np.kron(S, I)
+        rho_p = np.matmul(S_t, np.matmul(rho_p, S_t))
     return partial_trace(rho_p)
 
 def get_bias(rho):
@@ -78,7 +78,8 @@ def get_bias(rho):
         Hermetian density matrix which we take an expectation value over
         identiy tensor sigma z
     """
-    e_v = np.trace(np.matmul(rho, sig_z_p))
+    e_v = np.trace( np.matmul(rho, sig_z_p) )
+    ran = random.random()
     return 0 if random.random() > (0.5+e_v/2) else 1
 
 def partial_trace(rho):
@@ -96,6 +97,7 @@ def partial_trace(rho):
     new_matrix = np.array([[rho[0][0]+rho[1][1],rho[0][2]+rho[1][3]],
                            [rho[2][0]+rho[3][1],rho[2][2]+rho[3][3]]])
     return new_matrix
+    
 
 class Experiment:
     """
