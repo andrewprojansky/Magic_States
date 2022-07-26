@@ -159,13 +159,7 @@ class Experiment:
         plt.show()
 
     def __gen_xyz_points(self):
-        """
-        Parameters
-        ----------
-        angle_arr : list
-            list of the form [[theta1,phi1],[theta2,phi2] ...].
-
-        """
+        
         self.angles[0].append(2*np.real(self.state[1][0]))
         self.angles[1].append(2*np.imag(self.state[1][0]))
         self.angles[2].append(2*self.state[0][0]-1)
